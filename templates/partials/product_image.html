@@ -1,0 +1,6 @@
+{# A product photo, or a neutral placeholder when the product has no image URL. #}
+{% if product.image %}
+    <img src="{{ product.image }}" alt="{{ alt|default:'' }}" loading="lazy">
+{% else %}
+    {% include "partials/icon.html" with name="package" size=28 %}
+{% endif %}

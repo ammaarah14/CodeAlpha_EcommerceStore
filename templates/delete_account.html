@@ -1,73 +1,53 @@
-{% load static %}
+{% extends "base.html" %}
 
-<!DOCTYPE html>
-<html lang="en">
+{% block title %}Delete account | Study Store{% endblock %}
 
-<head>
+{% block content %}
+<div class="auth-page">
+    <section class="surface auth-card delete-card">
 
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <div class="eyebrow">Study Store / Account</div>
+        <h1>Delete your account?</h1>
+        <p class="auth-copy">
+            This permanently deletes your Study Store account,
+            along with your wishlist and order history.
+        </p>
 
-    <title>Delete Account | Study Store</title>
-
-    <link rel="stylesheet" href="{% static 'style.css' %}">
-
-</head>
-
-<body>
-
-    <nav class="navbar">
-
-        <h1>🎀 Study Store 🛍️</h1>
-
-    </nav>
-
-
-    <div class="container">
-
-        <div class="product-card">
-
-            <h2>🗑️ Delete Account?</h2>
-
-            <p>
-                Are you sure you want to permanently delete
-                your Study Store account?
-            </p>
-
-            <p>
-                This action cannot be undone.
-            </p>
-
-            <p>
-                <strong>Deleting your account will cancel all active orders.</strong>
-            </p>
-
-            <br>
-
-            <a href="{% url 'home' %}" class="button">
-                Cancel
-            </a>
-
-            <form
-                method="POST"
-                style="display: inline;"
-            >
-
-                {% csrf_token %}
-
-                <button
-                    type="submit"
-                    class="delete-account-button"
-                >
-                    🗑️ Delete My Account
-                </button>
-
-            </form>
-
+        <div class="danger-copy">
+            This action cannot be undone. Please be certain before continuing.
         </div>
 
-    </div>
+        <form method="POST">
+            {% csrf_token %}
 
-</body>
+            <label class="confirm-check">
+                <input type="checkbox" id="confirm-delete">
+                I understand what will be removed.
+            </label>
 
-</html>
+            <div class="form-actions">
+                <button type="submit" class="btn danger" id="delete-button" disabled>
+                    Delete account
+                </button>
+                <a href="{% url 'profile' %}" class="btn secondary">Cancel</a>
+            </div>
+        </form>
+
+    </section>
+</div>
+{% endblock %}
+
+
+{% block scripts %}
+<script>
+    /* The delete button stays disabled until the box is ticked */
+    (function () {
+        var box = document.getElementById("confirm-delete");
+        var button = document.getElementById("delete-button");
+
+        box.addEventListener("change", function () {
+            button.disabled = !box.checked;
+        });
+    })();
+</script>
+{% endblock %}

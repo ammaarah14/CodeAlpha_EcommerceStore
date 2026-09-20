@@ -1,295 +1,117 @@
-```html
-{% load static %}
+{% extends "base.html" %}
 
-<!DOCTYPE html>
-<html lang="en">
+{% block title %}Your Cart | Study Store{% endblock %}
 
-<head>
+{% block content %}
+<div class="page">
+    <div class="container">
 
-    <meta charset="UTF-8">
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
-
-    <title>Your Cart | Study Store</title>
-
-    <link rel="stylesheet" href="{% static 'style.css' %}">
-
-    <link
-        rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
-    >
-
-</head>
-
-<body>
-
-    <!-- NAVBAR -->
-    <nav class="navbar">
-
-        <h1>
-            <i class="fa-solid fa-book-open"></i>
-            Study Store
-        </h1>
-
-        <div class="account-area">
-
-            <a href="{% url 'home' %}" class="button">
-                <i class="fa-solid fa-house"></i>
-                Store
-            </a>
-
-        </div>
-
-    </nav>
-
-
-    <!-- MAIN CONTENT -->
-    <main class="container">
-
-        <div class="section-heading">
-
+        <div class="page-head">
             <div>
-
-                <p class="section-eyebrow">
-                    YOUR SHOPPING BAG
-                </p>
-
-                <h2>
-                    <i class="fa-solid fa-cart-shopping"></i>
-                    Your Shopping Cart
-                </h2>
-
+                <div class="eyebrow">Study Store / Bag</div>
+                <h1 class="page-title">Your Cart</h1>
+                <p class="page-subtitle">{{ products|length }} item{{ products|length|pluralize }}</p>
             </div>
-
         </div>
-
 
         {% if products %}
 
             <div class="cart-layout">
 
-                <!-- CART ITEMS -->
-                <div class="cart-items">
+                <!-- ITEMS -->
+
+                <div class="surface cart-list">
+
+                    <div class="cart-head">
+                        <span>Product</span>
+                        <span>Price</span>
+                        <span>Quantity</span>
+                        <span>Subtotal</span>
+                        <span></span>
+                    </div>
 
                     {% for item in products %}
+                        <div class="cart-row">
 
-                        <div class="cart-item">
-
-                            <div class="cart-item-image">
-
-                                <i class="fa-solid fa-book"></i>
-
-                            </div>
-
-
-                            <div class="cart-item-information">
-
-                                <h3>
-                                    {{ item.product.name }}
-                                </h3>
-
-                                <p>
-                                    {{ item.product.description }}
-                                </p>
-
-                                <p class="cart-item-price">
-                                    R{{ item.product.price }}
-                                </p>
-
-
-                                <div class="cart-quantity">
-
-                                    <span>
-                                        Quantity
-                                    </span>
-
-                                    <div class="quantity-controls">
-
-                                        <a
-                                            href="{% url 'update_cart' item.product.id 'decrease' %}"
-                                            class="quantity-button"
-                                        >
-                                            <i class="fa-solid fa-minus"></i>
-                                        </a>
-
-                                        <span class="quantity-number">
-                                            {{ item.quantity }}
-                                        </span>
-
-                                        <a
-                                            href="{% url 'update_cart' item.product.id 'increase' %}"
-                                            class="quantity-button"
-                                        >
-                                            <i class="fa-solid fa-plus"></i>
-                                        </a>
-
+                            <div class="cart-product">
+                                <div class="cart-thumb">
+                                    <div class="art-canvas small-art{% if not item.product.image %} placeholder{% endif %}">
+                                        {% include "partials/product_image.html" with product=item.product alt=item.product.name %}
                                     </div>
-
                                 </div>
+                                <div>
+                                    <a href="{% url 'product_detail' item.product.id %}" class="cart-name">{{ item.product.name }}</a>
+                                    <div class="cart-meta">{{ item.product.description|truncatechars:48 }}</div>
+                                </div>
+                            </div>
 
+                            <div class="cart-amount">R{{ item.product.price }}</div>
 
-                                <a
-                                    href="{% url 'remove_from_cart' item.product.id %}"
-                                    class="remove-cart-button"
-                                >
-                                    <i class="fa-solid fa-trash"></i>
-                                    Remove
+                            <div class="cart-actions">
+                                <a href="{% url 'update_cart' item.product.id 'decrease' %}" aria-label="Decrease quantity">
+                                    {% include "partials/icon.html" with name="minus" size=12 %}
                                 </a>
-
+                                <span>{{ item.quantity }}</span>
+                                <a href="{% url 'update_cart' item.product.id 'increase' %}" aria-label="Increase quantity">
+                                    {% include "partials/icon.html" with name="plus" size=12 %}
+                                </a>
                             </div>
 
+                            <div class="cart-amount">R{{ item.subtotal }}</div>
 
-                            <div class="cart-item-subtotal">
-
-                                <span>
-                                    Subtotal
-                                </span>
-
-                                <strong>
-                                    R{{ item.subtotal }}
-                                </strong>
-
-                            </div>
+                            <a href="{% url 'remove_from_cart' item.product.id %}" class="remove-btn" aria-label="Remove {{ item.product.name }}">
+                                {% include "partials/icon.html" with name="x" size=14 %}
+                            </a>
 
                         </div>
-
                     {% endfor %}
 
-                </div>
-
-
-                <!-- CART SUMMARY -->
-                <aside class="cart-summary">
-
-                    <p class="section-eyebrow">
-                        ORDER SUMMARY
-                    </p>
-
-                    <h2>
-                        Your Total
-                    </h2>
-
-                    <div class="cart-summary-line">
-
-                        <span>
-                            Items
-                        </span>
-
-                        <span>
-                            {{ products|length }}
-                        </span>
-
-                    </div>
-
-
-                    <div class="cart-summary-total">
-
-                        <span>
-                            Total
-                        </span>
-
-                        <strong>
-                            R{{ total }}
-                        </strong>
-
-                    </div>
-
-
-                    <a
-                        href="{% url 'checkout' %}"
-                        class="checkout-button"
-                    >
-                        Proceed to Checkout
-                        <i class="fa-solid fa-arrow-right"></i>
-                    </a>
-
-
-                    <a
-                        href="{% url 'home' %}"
-                        class="continue-shopping"
-                    >
-                        <i class="fa-solid fa-arrow-left"></i>
+                    <a href="{% url 'home' %}#products" class="continue">
+                        {% include "partials/icon.html" with name="arrow-left" size=12 %}
                         Continue Shopping
                     </a>
 
+                </div>
+
+                <!-- SUMMARY -->
+
+                <aside class="surface summary">
+                    <h3>Order Summary</h3>
+
+                    <div class="summary-line">
+                        <span>Items</span>
+                        <span>{{ products|length }}</span>
+                    </div>
+
+                    <div class="summary-line total">
+                        <span>Total</span>
+                        <span>R{{ total }}</span>
+                    </div>
+
+                    <a href="{% url 'checkout' %}" class="btn full">
+                        Checkout
+                        {% include "partials/icon.html" with name="arrow-right" size=14 %}
+                    </a>
+
+                    <p class="order-note">Free shipping on orders over R500.</p>
                 </aside>
 
             </div>
 
-
         {% else %}
 
-            <!-- EMPTY CART -->
-            <div class="empty-cart">
-
-                <div class="empty-cart-icon">
-
-                    <i class="fa-solid fa-cart-shopping"></i>
-
-                </div>
-
-                <h2>
-                    Your cart is empty
-                </h2>
-
-                <p>
-                    Looks like you haven't added anything to your cart yet.
-                </p>
-
-                <a
-                    href="{% url 'home' %}"
-                    class="button"
-                >
-                    <i class="fa-solid fa-book"></i>
-                    Browse Products
+            <div class="empty-state">
+                <div class="empty-icon">{% include "partials/icon.html" with name="cart" size=18 %}</div>
+                <h3>Your cart is quiet</h3>
+                <p>Good things to study with are waiting for you.</p>
+                <a href="{% url 'home' %}#products" class="btn">
+                    Continue Shopping
+                    {% include "partials/icon.html" with name="arrow-right" size=14 %}
                 </a>
-
             </div>
 
         {% endif %}
 
-    </main>
-
-
-    <!-- FOOTER -->
-    <footer class="site-footer">
-
-        <div class="footer-inner">
-
-            <div>
-
-                <h3>
-                    <i class="fa-solid fa-book-open"></i>
-                    Study Store
-                </h3>
-
-                <p>
-                    Everything you need for your study journey.
-                </p>
-
-            </div>
-
-            <div class="footer-bottom">
-
-                <p>
-                    © 2026 Study Store. All rights reserved.
-                </p>
-
-            </div>
-
-        </div>
-
-    </footer>
-
-
-    <!-- FONT AWESOME -->
-    <script
-        src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/js/all.min.js">
-    </script>
-
-</body>
-
-</html>
-```
+    </div>
+</div>
+{% endblock %}

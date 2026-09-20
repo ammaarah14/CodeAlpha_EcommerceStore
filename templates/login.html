@@ -1,65 +1,42 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends "base.html" %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% block title %}Log in | Study Store{% endblock %}
 
-    <title>Login | Study Store</title>
-</head>
+{% block messages %}{% endblock %}
 
-<body>
+{% block content %}
+<div class="auth-page">
+    <section class="surface auth-card">
 
-    <h1>🔐 Login to Study Store</h1>
+        <div class="eyebrow">Study Store / Account</div>
+        <h1>Welcome back.</h1>
+        <p class="auth-copy">Sign in to see your orders, wishlist, and profile details.</p>
 
-    <p>Welcome back!</p>
+        {% include "partials/messages.html" with inline=True %}
 
-    {% if messages %}
+        <form method="POST" class="auth-form">
+            {% csrf_token %}
 
-        {% for message in messages %}
+            <label class="form-field">
+                <span class="form-label">Username</span>
+                <input type="text" name="username" class="field" autocomplete="username" required autofocus>
+            </label>
 
-            <p>{{ message }}</p>
+            <label class="form-field">
+                <span class="form-label">Password</span>
+                <input type="password" name="password" class="field" autocomplete="current-password" required>
+            </label>
 
-        {% endfor %}
+            <button type="submit" class="btn full">
+                Log in
+                {% include "partials/icon.html" with name="arrow-right" size=14 %}
+            </button>
+        </form>
 
-    {% endif %}
+        <p class="auth-foot">
+            New here? <a href="{% url 'register' %}">Create an account</a>
+        </p>
 
-    <form method="POST">
-
-        {% csrf_token %}
-
-        <label>Username:</label>
-        <br>
-
-        <input type="text" name="username" required>
-
-        <br><br>
-
-        <label>Password:</label>
-        <br>
-
-        <input type="password" name="password" required>
-
-        <br><br>
-
-        <button type="submit">
-            Login
-        </button>
-
-    </form>
-
-    <br>
-
-    <a href="{% url 'register' %}">
-        Don't have an account? Create one
-    </a>
-
-    <br><br>
-
-    <a href="/">
-        ← Back to Store
-    </a>
-
-</body>
-
-</html>
+    </section>
+</div>
+{% endblock %}

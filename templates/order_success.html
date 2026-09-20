@@ -1,45 +1,58 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends "base.html" %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% block title %}Order #{{ order.id }} | Study Store{% endblock %}
 
-    <title>Order Complete | Study Store</title>
-</head>
+{% block content %}
+<div class="page">
+    <div class="container">
+        <div class="success">
 
-<body>
+            <div class="success-mark">{% include "partials/icon.html" with name="check" size=26 %}</div>
 
-    <h1>🎉 Order Placed Successfully!</h1>
+            <div class="eyebrow">Study Store / Thank you</div>
+            <h1>Order placed successfully.</h1>
+            <p>
+                Thanks for your order, {{ request.user.username }}.
+                We’ll keep you posted as it moves your way.
+            </p>
 
-    <p>
-        Thank you for your order, {{ request.user.username }}!
-    </p>
+            <div class="surface order-card">
 
-    <h2>Order #{{ order.id }}</h2>
+                <div class="order-meta">
+                    <div>
+                        <div class="order-id">Order #{{ order.id }}</div>
+                        <div class="order-date">{{ order.created_at|date:"j M Y" }}</div>
+                    </div>
+                    <span class="status-pill">{{ order.get_status_display }}</span>
+                </div>
 
-    <p>
-        Total: R{{ order.total }}
-    </p>
+                {% for item in order.items.all %}
+                    <div class="checkout-item">
+                        <div>
+                            <div class="mini-thumb">
+                                <div class="art-canvas small-art{% if not item.product.image %} placeholder{% endif %}">
+                                    {% include "partials/product_image.html" with product=item.product alt=item.product.name %}
+                                </div>
+                            </div>
+                            <span>{{ item.product.name }} × {{ item.quantity }}</span>
+                        </div>
+                        <span>R{{ item.subtotal }}</span>
+                    </div>
+                {% endfor %}
 
-    <h3>Items:</h3>
+                <div class="success-total">
+                    <span>Total</span>
+                    <span>R{{ order.total }}</span>
+                </div>
 
-    {% for item in order.items.all %}
+            </div>
 
-        <p>
-            {{ item.product.name }}
-            × {{ item.quantity }}
-            — R{{ item.subtotal }}
-        </p>
+            <div class="success-actions">
+                <a href="{% url 'past_orders' %}" class="btn">View My Orders</a>
+                <a href="{% url 'home' %}#products" class="btn secondary">Continue Shopping</a>
+            </div>
 
-    {% endfor %}
-
-    <br>
-
-    <a href="/">
-        🏠 Continue Shopping
-    </a>
-
-</body>
-
-</html>
+        </div>
+    </div>
+</div>
+{% endblock %}

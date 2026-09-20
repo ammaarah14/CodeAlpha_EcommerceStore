@@ -1,76 +1,55 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends "base.html" %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% block title %}My Profile | Study Store{% endblock %}
 
-    <title>My Account | Study Store</title>
-
-    {% load static %}
-    <link rel="stylesheet" href="{% static 'style.css' %}">
-</head>
-
-<body>
-
-    <nav class="navbar">
-
-        <h1>🎀 Study Store 🛍️</h1>
-
-        <a href="{% url 'home' %}" class="button">
-            🏠 Store
-        </a>
-
-        <a href="{% url 'cart' %}" class="button">
-            🛒 View Cart
-        </a>
-
-    </nav>
-
+{% block content %}
+<div class="page">
     <div class="container">
 
-        <h2>👤 My Account</h2>
+        <div class="page-head">
+            <div>
+                <div class="eyebrow">Study Store / Account</div>
+                <h1 class="page-title">My Profile</h1>
+                <p class="page-subtitle">Your details, kept simple.</p>
+            </div>
+        </div>
 
-        <div class="profile-card">
+        <div class="account-layout">
 
-            <h3>Account Details</h3>
+            <aside class="account-nav">
+                <a href="{% url 'profile' %}" aria-current="page">Profile</a>
+                <a href="{% url 'past_orders' %}">Past Orders</a>
+                <a href="{% url 'wishlist' %}">Wishlist</a>
+                <a href="{% url 'logout' %}">Log out</a>
+                <a href="{% url 'delete_account' %}" class="danger-link">Delete Account</a>
+            </aside>
 
-            <p>
-                <strong>Username:</strong>
-                {{ user.username }}
-            </p>
+            <section class="surface profile-card">
 
-            <p>
-                <strong>Email:</strong>
-                {{ user.email }}
-            </p>
+                <div class="avatar">{{ user.username|first|upper }}</div>
+
+                <div class="profile-name">{{ user.username }}</div>
+                <div class="profile-email">{{ user.email|default:"No email on file" }}</div>
+
+                <dl class="detail-list">
+                    <div>
+                        <dt>Username</dt>
+                        <dd>{{ user.username }}</dd>
+                    </div>
+                    <div>
+                        <dt>Email</dt>
+                        <dd>{{ user.email|default:"—" }}</dd>
+                    </div>
+                    <div>
+                        <dt>Member since</dt>
+                        <dd>{{ user.date_joined|date:"j M Y" }}</dd>
+                    </div>
+                </dl>
+
+            </section>
 
         </div>
 
-        <br>
-
-        <a href="{% url 'past_orders' %}" class="button">
-            📦 Past Orders
-        </a>
-
-        <a href="#" class="button">
-            💕 Wishlist
-        </a>
-
-        <br><br>
-
-        <a href="{% url 'logout' %}" class="button">
-            🚪 Logout
-        </a>
-
-        <br><br>
-
-        <button class="button">
-            🗑️ Delete Account
-        </button>
-
     </div>
-
-</body>
-
-</html>
+</div>
+{% endblock %}

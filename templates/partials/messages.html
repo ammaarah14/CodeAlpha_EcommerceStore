@@ -1,0 +1,7 @@
+{% if messages %}
+    <div class="messages{% if not inline %} container{% endif %}" role="status">
+        {% for message in messages %}
+            <div class="message {{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+    </div>
+{% endif %}

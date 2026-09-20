@@ -1,690 +1,256 @@
-{% load static %}
+{% extends "base.html" %}
+{% load static l10n %}
 
-<!DOCTYPE html>
-<html lang="en">
+{% block title %}Study Store{% endblock %}
 
-<head>
+{% block content %}
 
-    <meta charset="UTF-8">
+<!-- =====================================================
+     HERO
+     ===================================================== -->
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
+<section class="hero">
+    <div class="container">
+        <div class="hero-grid">
 
-    <title>Study Store</title>
+            <div class="hero-copy">
+                <div class="hero-kicker">Study Store / 2026 collection</div>
 
-    <link
-        rel="stylesheet"
-        href="{% static 'style.css' %}"
-    >
+                <h1>Better<br><em>tools</em> for a<br>brighter future.</h1>
 
-    <link
-        rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
-    >
+                <p class="hero-desc">
+                    Premium study essentials, stationery, tech
+                    and more — all in one place.
+                </p>
 
-</head>
+                <a href="#products" class="btn accent">
+                    Shop Now
+                    {% include "partials/icon.html" with name="arrow-right" size=14 %}
+                </a>
+            </div>
 
+            <div class="hero-art">
+                <img
+                    class="hero-image"
+                    src="{% static 'images/hero.png' %}"
+                    alt="Notebook, pen, coffee and laptop on a dark desk"
+                >
+            </div>
 
-<body>
+        </div>
+    </div>
+</section>
 
 
 <!-- =====================================================
-     NAVIGATION
+     BENEFITS
      ===================================================== -->
 
-<nav class="navbar">
+<div class="container">
+    <div class="benefits">
 
-    <h1>
-    <i class="fa-solid fa-book-open"></i>
-    Study Store
-    </h1>
+        <div class="benefit">
+            <span class="benefit-icon">{% include "partials/icon.html" with name="truck" size=14 %}</span>
+            <div><strong>Free Shipping</strong><span>On orders over R500</span></div>
+        </div>
 
-    <div class="account-area">
+        <div class="benefit">
+            <span class="benefit-icon">{% include "partials/icon.html" with name="shield" size=14 %}</span>
+            <div><strong>Secure Payments</strong><span>Pay safely every time</span></div>
+        </div>
 
-        {% if user.is_authenticated %}
+        <div class="benefit">
+            <span class="benefit-icon">{% include "partials/icon.html" with name="zap" size=14 %}</span>
+            <div><strong>Easy Returns</strong><span>Hassle-free returns</span></div>
+        </div>
 
-            <!-- Account button -->
+        <div class="benefit">
+            <span class="benefit-icon">{% include "partials/icon.html" with name="heart" size=14 %}</span>
+            <div><strong>Made for Focus</strong><span>Tools to help you do more</span></div>
+        </div>
 
-            <button
-                type="button"
-                class="account-button"
-                onclick="toggleAccountMenu()"
-            >
-                <i class="fa-solid fa-user"></i> Account
-            </button>
+    </div>
+</div>
 
+
+<!-- =====================================================
+     PRODUCTS
+     ===================================================== -->
+
+<section class="section" id="products">
+    <div class="container">
+
+        <div class="section-head">
+            <div>
+                <div class="eyebrow">Our collection</div>
+                <h2 class="section-title">Featured Products</h2>
+            </div>
+
+            <span class="product-count">{{ products|length }} Product{{ products|length|pluralize }}</span>
+        </div>
+
+        {% if products %}
+
+            <div class="catalog-toolbar">
+
+                <div class="search-wrap">
+                    {% include "partials/icon.html" with name="search" size=14 %}
+                    <input
+                        type="search"
+                        id="product-search"
+                        class="field"
+                        placeholder="Search products..."
+                        aria-label="Search products"
+                        autocomplete="off"
+                    >
+                </div>
+
+                <select id="product-sort" class="field select" aria-label="Sort products">
+                    <option value="default">Sort by: Default</option>
+                    <option value="price-low">Price: Low to high</option>
+                    <option value="price-high">Price: High to low</option>
+                    <option value="name">Name: A to Z</option>
+                </select>
+
+            </div>
+
+            <div class="results-line" id="results-line" aria-live="polite">
+                {{ products|length }} product{{ products|length|pluralize }}
+            </div>
+
+            <div class="product-grid" id="product-grid">
+
+                {% for product in products %}
+                    <article
+                        class="product-card"
+                        data-name="{{ product.name|lower }}"
+                        data-price="{{ product.price|unlocalize }}"
+                        data-index="{{ forloop.counter0 }}"
+                    >
+
+                        <a href="{% url 'product_detail' product.id %}" class="product-visual">
+                            <div class="art-canvas{% if not product.image %} placeholder{% endif %}">
+                                {% include "partials/product_image.html" with product=product alt=product.name %}
+                            </div>
+                        </a>
+
+                        <div class="product-info">
+
+                            <a href="{% url 'product_detail' product.id %}" class="product-name">
+                                {{ product.name }}
+                            </a>
+
+                            <div class="product-bottom">
+                                <span class="product-price">R{{ product.price }}</span>
+
+                                {% if product.stock > 0 %}
+                                    <span class="stock-note">{{ product.stock }} in stock</span>
+                                {% else %}
+                                    <span class="stock-note out">Out of stock</span>
+                                {% endif %}
+                            </div>
+
+                            {% if product.stock > 0 %}
+                                <a href="{% url 'add_to_cart' product.id %}" class="btn small">
+                                    Add to Cart
+                                </a>
+                            {% else %}
+                                <span class="btn small disabled" aria-disabled="true">Sold out</span>
+                            {% endif %}
+
+                        </div>
+
+                    </article>
+                {% endfor %}
+
+            </div>
+
+            <div class="empty-state" id="no-results" hidden>
+                <div class="empty-icon">{% include "partials/icon.html" with name="search" size=18 %}</div>
+                <h3>No products found</h3>
+                <p>Try a different search term.</p>
+                <button type="button" class="btn secondary" id="clear-search">Clear search</button>
+            </div>
 
         {% else %}
 
-            <!-- Login / Register -->
-
-            <a
-                href="{% url 'login' %}"
-                class="button"
-            >
-                Login
-            </a>
-
-            <a
-                href="{% url 'register' %}"
-                class="button"
-            >
-                Create Account
-            </a>
+            <div class="empty-state">
+                <div class="empty-icon">{% include "partials/icon.html" with name="package" size=18 %}</div>
+                <h3>No products available</h3>
+                <p>Check back soon for new study essentials.</p>
+            </div>
 
         {% endif %}
 
 
-        <!-- Cart -->
-
-        <a
-            href="{% url 'cart' %}"
-            class="button cart-button"
-        >
-            <i class="fa-solid fa-cart-shopping"></i> View Cart
-        </a>
-
-    </div>
-
-</nav>
-
-
-
-<!-- =====================================================
-     ACCOUNT SIDE MENU
-     ===================================================== -->
-
-{% if user.is_authenticated %}
-
-    <!-- Dark overlay -->
-
-    <div
-        id="account-overlay"
-        class="account-overlay"
-        onclick="closeAccountMenu()"
-    ></div>
-
-
-    <!-- Side menu -->
-
-    <aside
-        id="account-menu"
-        class="account-menu"
-    >
-
-
-        <!-- Account header -->
-
-        <div class="account-menu-header">
-
+        <div class="split-banner">
             <div>
-
-                <h2>
-                    <i class="fa-solid fa-user"></i> My Account
-                </h2>
-
-                <p>
-                    {{ user.username }}
-                </p>
-
+                <div class="eyebrow">The essentials edit</div>
+                <h3>Make space for better thinking.</h3>
+                <p>From the first page to the final deadline, keep the useful things close.</p>
             </div>
-
-
-            <button
-                type="button"
-                class="close-account"
-                onclick="closeAccountMenu()"
-            >
-                ✕
-            </button>
-
+            <div>
+                <a href="#products" class="btn">
+                    Explore the collection
+                    {% include "partials/icon.html" with name="arrow-right" size=14 %}
+                </a>
+            </div>
         </div>
-
-
-
-        <!-- Account options -->
-
-        <div class="account-menu-options">
-
-
-            <!-- Profile -->
-
-            <a href="{% url 'profile' %}">
-
-                <span><i class="fa-solid fa-user"></i></span>
-
-                <span>
-                    Profile
-                </span>
-
-            </a>
-
-
-
-            <!-- Past Orders -->
-
-            <a href="{% url 'past_orders' %}">
-
-                <span><i class="fa-solid fa-box"></i></span>
-
-                <span>
-                    Past Orders
-                </span>
-
-            </a>
-
-
-
-            <!-- Wishlist -->
-
-            <a href="{% url 'wishlist' %}">
-
-                <span><i class="fa-regular fa-heart"></i></span>
-
-                <span>
-                    Wishlist
-                </span>
-
-            </a>
-
-
-
-            <!-- Logout -->
-
-            <a href="{% url 'logout' %}">
-
-                <span><i class="fa-solid fa-right-from-bracket"></i></span>
-
-                <span>
-                    Logout
-                </span>
-
-            </a>
-
-        </div>
-
-
-
-        <!-- Delete account -->
-
-        <div class="account-menu-danger">
-
-            <a href="{% url 'delete_account' %}">
-
-                <i class="fa-solid fa-trash"></i> Delete Account
-
-            </a>
-
-        </div>
-
-
-    </aside>
-
-{% endif %}
-
-
-
-<!-- =====================================================
-     HERO SECTION
-     ===================================================== -->
-
-<section class="hero">
-
-    <div class="hero-content">
-
-        <h2>Better Tools for a Brighter Future</h2>
-
-        <p>
-            Premium study essentials, stationery, tech
-            and more — all in one place.
-        </p>
-
-        <a href="#products" class="button">
-            Shop Now →
-        </a>
 
     </div>
-
 </section>
 
+{% endblock %}
 
 
-<!-- =====================================================
-     SERVICE / TRUST STRIP
-     ===================================================== -->
-
-<section class="service-strip">
-
-
-    <!-- Free Shipping -->
-
-    <div class="service-item">
-
-        <div class="service-icon">
-            <i class="fa-solid fa-truck"></i>
-        </div>
-
-
-        <div>
-
-            <h4>
-                Free Shipping
-            </h4>
-
-            <p>
-                On orders over R500
-            </p>
-
-        </div>
-
-    </div>
-
-
-
-    <!-- Secure Payments -->
-
-    <div class="service-item">
-
-        <div class="service-icon">
-            <i class="fa-solid fa-shield-halved"></i>
-        </div>
-
-
-        <div>
-
-            <h4>
-                Secure Payments
-            </h4>
-
-            <p>
-                Your data is safe
-            </p>
-
-        </div>
-
-    </div>
-
-
-
-    <!-- Easy Returns -->
-
-    <div class="service-item">
-
-        <div class="service-icon">
-            <i class="fa-solid fa-rotate-left"></i>
-        </div>
-
-
-        <div>
-
-            <h4>
-                Easy Returns
-            </h4>
-
-            <p>
-                Hassle-free returns
-            </p>
-
-        </div>
-
-    </div>
-
-
-
-    <!-- Support -->
-
-    <div class="service-item">
-
-        <div class="service-icon">
-            <i class="fa-solid fa-headset"></i>
-        </div>
-
-
-        <div>
-
-            <h4>
-                24/7 Support
-            </h4>
-
-            <p>
-                We're here to help
-            </p>
-
-        </div>
-
-    </div>
-
-
-</section>
-
-
-
-<!-- =====================================================
-     MAIN CONTENT
-     ===================================================== -->
-
-<div
-    class="container"
-    id="products"
->
-
-
-    <!-- Welcome -->
-
-    <section class="store-introduction">
-
-        <p class="section-eyebrow">
-            WELCOME TO STUDY STORE
-        </p>
-
-        <h2>
-            Everything you need<br>
-            to study smarter.
-        </h2>
-
-        <p>
-            Discover carefully selected study essentials
-            designed to make your everyday learning
-            experience better.
-        </p>
-
-    </section>
-
-
-
-    <!-- =================================================
-         PRODUCTS
-         ================================================= -->
-
-    <section class="products-section">
-
-
-        <div class="section-heading">
-
-            <div>
-
-                <p class="section-eyebrow">
-                    OUR COLLECTION
-                </p>
-
-                <h2>
-                    Featured Products
-                </h2>
-
-            </div>
-
-
-            <span class="product-count">
-                {{ products|length }} Products
-            </span>
-
-        </div>
-
-
-
-        <div class="products">
-
-
-            {% for product in products %}
-
-
-                <article class="product-card">
-
-
-                    <!-- Product image -->
-
-                    {% if product.image %}
-
-                        <div class="product-image">
-
-                            <img
-                                src="{{ product.image }}"
-                                alt="{{ product.name }}"
-                            >
-
-                        </div>
-
-                    {% else %}
-
-                        <div class="product-image product-image-placeholder">
-
-                            <span>
-                                <i class="fa-solid fa-book"></i>
-                            </span>
-
-                        </div>
-
-                    {% endif %}
-
-
-
-                    <!-- Product information -->
-
-                    <div class="product-information">
-
-
-                        <h3>
-                            {{ product.name }}
-                        </h3>
-
-
-                        <p class="product-description">
-                            {{ product.description }}
-                        </p>
-
-
-                        <div class="product-bottom">
-
-
-                            <div>
-
-                                <p class="price">
-                                    R{{ product.price }}
-                                </p>
-
-
-                                {% if product.stock > 0 %}
-
-                                    <p class="stock">
-                                        ● In stock
-                                    </p>
-
-                                {% else %}
-
-                                    <p class="stock out-of-stock">
-                                        ● Out of stock
-                                    </p>
-
-                                {% endif %}
-
-                            </div>
-
-
-                            <a
-                                href="{% url 'product_detail' product.id %}"
-                                class="product-view-button"
-                            >
-                                View →
-                            </a>
-
-
-                        </div>
-
-
-                    </div>
-
-
-                </article>
-
-
-            {% empty %}
-
-
-                <div class="empty-products">
-
-                    <h3>
-                        No products available
-                    </h3>
-
-                    <p>
-                        Check back soon for new study essentials.
-                    </p>
-
-                </div>
-
-
-            {% endfor %}
-
-
-        </div>
-
-
-    </section>
-
-
-</div>
-
-
-
-<!-- =====================================================
-     FOOTER
-     ===================================================== -->
-
-<footer class="site-footer">
-
-
-    <div class="footer-inner">
-
-
-        <div>
-
-            <h3>
-                <i class="fa-solid fa-book-open"></i> Study Store
-            </h3>
-
-            <p>
-                Better tools for a brighter future.
-            </p>
-
-        </div>
-
-
-        <div class="footer-links">
-
-            <a href="/">
-                Home
-            </a>
-
-            <a href="#products">
-                Shop
-            </a>
-
-            {% if user.is_authenticated %}
-
-                <a href="{% url 'past_orders' %}">
-                    Orders
-                </a>
-
-                <a href="{% url 'wishlist' %}">
-                    Wishlist
-                </a>
-
-            {% endif %}
-
-        </div>
-
-
-    </div>
-
-
-    <div class="footer-bottom">
-
-        <p>
-            © 2026 Study Store. All rights reserved.
-        </p>
-
-    </div>
-
-
-</footer>
-
-
-
-<!-- =====================================================
-     ACCOUNT MENU JAVASCRIPT
-     ===================================================== -->
-
+{% block scripts %}
 <script>
+    /* Client-side search + sort for the product grid */
+    (function () {
+        var grid = document.getElementById("product-grid");
+        if (!grid) return;
 
+        var cards = Array.prototype.slice.call(grid.querySelectorAll(".product-card"));
+        var search = document.getElementById("product-search");
+        var sort = document.getElementById("product-sort");
+        var line = document.getElementById("results-line");
+        var empty = document.getElementById("no-results");
+        var clear = document.getElementById("clear-search");
 
-function toggleAccountMenu() {
+        function apply() {
+            var term = search.value.trim().toLowerCase();
 
-    const menu =
-        document.getElementById("account-menu");
+            var visible = cards.filter(function (card) {
+                return card.dataset.name.indexOf(term) !== -1;
+            });
 
-    const overlay =
-        document.getElementById("account-overlay");
+            cards.forEach(function (card) {
+                card.hidden = visible.indexOf(card) === -1;
+            });
 
+            visible.sort(function (a, b) {
+                switch (sort.value) {
+                    case "price-low":  return parseFloat(a.dataset.price) - parseFloat(b.dataset.price);
+                    case "price-high": return parseFloat(b.dataset.price) - parseFloat(a.dataset.price);
+                    case "name":       return a.dataset.name.localeCompare(b.dataset.name);
+                    default:           return a.dataset.index - b.dataset.index;
+                }
+            });
 
-    if (!menu || !overlay) {
-        return;
-    }
+            visible.forEach(function (card) { grid.appendChild(card); });
 
-
-    menu.classList.toggle("active");
-
-    overlay.classList.toggle("active");
-
-}
-
-
-
-function closeAccountMenu() {
-
-    const menu =
-        document.getElementById("account-menu");
-
-    const overlay =
-        document.getElementById("account-overlay");
-
-
-    if (!menu || !overlay) {
-        return;
-    }
-
-
-    menu.classList.remove("active");
-
-    overlay.classList.remove("active");
-
-}
-
-
-
-/*
-    Close the account menu when
-    the Escape key is pressed.
-*/
-
-document.addEventListener(
-    "keydown",
-    function(event) {
-
-        if (event.key === "Escape") {
-
-            closeAccountMenu();
-
+            line.textContent = visible.length + (visible.length === 1 ? " product" : " products");
+            empty.hidden = visible.length > 0;
+            grid.hidden = visible.length === 0;
         }
 
-    }
-);
-
-
+        search.addEventListener("input", apply);
+        sort.addEventListener("change", apply);
+        clear.addEventListener("click", function () {
+            search.value = "";
+            apply();
+            search.focus();
+        });
+    })();
 </script>
-
-
-</body>
-
-</html>
+{% endblock %}

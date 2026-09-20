@@ -1,85 +1,57 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends "base.html" %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% block title %}Past Orders | Study Store{% endblock %}
 
-    <title>Past Orders | Study Store</title>
-</head>
+{% block content %}
+<div class="page">
+    <div class="container">
 
-<body>
-
-    <h1>📦 My Past Orders</h1>
-
-    <p>
-        Here you can view your previous orders and their status.
-    </p>
-
-    <hr>
-
-    {% if orders %}
-
-        {% for order in orders %}
-
+        <div class="page-head">
             <div>
+                <div class="eyebrow">Study Store / Account</div>
+                <h1 class="page-title">Past Orders</h1>
+                <p class="page-subtitle">A neat record of the things that keep you moving.</p>
+            </div>
+        </div>
 
-                <h2>
-                    Order #{{ order.id }}
-                </h2>
+        {% if orders %}
 
-                <p>
-                    Date:
-                    {{ order.created_at|date:"d M Y, H:i" }}
-                </p>
+            <div class="orders-list">
+                {% for order in orders %}
+                    <a href="{% url 'order_success' order.id %}" class="surface order-row">
 
-                <p>
-                    Status:
-                    <strong>{{ order.get_status_display }}</strong>
-                </p>
+                        <div>
+                            <div class="order-label">Order number</div>
+                            <div class="order-value">#{{ order.id }}</div>
+                        </div>
 
-                <h3>Items:</h3>
+                        <div>
+                            <div class="order-label">Placed</div>
+                            <div class="order-value">{{ order.created_at|date:"j M Y" }}</div>
+                        </div>
 
-                {% for item in order.items.all %}
+                        <div>
+                            <span class="status-pill">{{ order.get_status_display }}</span>
+                            <div class="order-value">R{{ order.total }}</div>
+                        </div>
 
-                    <p>
-                        {{ item.product.name }}
-                        × {{ item.quantity }}
-                        — R{{ item.subtotal }}
-                    </p>
+                        {% include "partials/icon.html" with name="chevron-right" size=16 %}
 
+                    </a>
                 {% endfor %}
-
-                <h3>
-                    Total: R{{ order.total }}
-                </h3>
-
             </div>
 
-            <hr>
+        {% else %}
 
-        {% endfor %}
+            <div class="empty-state">
+                <div class="empty-icon">{% include "partials/icon.html" with name="package" size=18 %}</div>
+                <h3>No orders yet</h3>
+                <p>Your first order will appear here after checkout.</p>
+                <a href="{% url 'home' %}#products" class="btn">Start shopping</a>
+            </div>
 
-    {% else %}
+        {% endif %}
 
-        <p>
-            You haven't placed any orders yet.
-        </p>
-
-    {% endif %}
-
-    <br>
-
-    <a href="/">
-        🏠 Back to Store
-    </a>
-
-    &nbsp;&nbsp;
-
-    <a href="{% url 'cart' %}">
-        🛒 View Cart
-    </a>
-
-</body>
-
-</html>
+    </div>
+</div>
+{% endblock %}

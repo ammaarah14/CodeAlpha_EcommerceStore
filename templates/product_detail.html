@@ -1,80 +1,82 @@
-{% load static %}
+{% extends "base.html" %}
 
-<!DOCTYPE html>
-<html lang="en">
+{% block title %}{{ product.name }} | Study Store{% endblock %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>{{ product.name }} | Study Store</title>
-
-    <link rel="stylesheet" href="{% static 'style.css' %}">
-</head>
-
-<body>
-
-    <nav class="navbar">
-        <h1>Study Store</h1>
-    </nav>
-
+{% block content %}
+<div class="page">
     <div class="container">
 
-        <a href="/" class="button">
-            ← Back to Store
+        <a href="{% url 'home' %}#products" class="continue">
+            {% include "partials/icon.html" with name="arrow-left" size=12 %}
+            Back to shop
         </a>
 
-        <div class="product-card">
+        <div class="detail-layout">
 
-            <h2>{{ product.name }}</h2>
+            <div class="art-canvas{% if not product.image %} placeholder{% endif %}">
+                {% include "partials/product_image.html" with product=product alt=product.name %}
+            </div>
 
-            <p>
-                {{ product.description }}
-            </p>
+            <div class="detail-copy">
 
-            <p class="price">
-                R{{ product.price }}
-            </p>
+                <div class="eyebrow">Study Store / Product</div>
 
-            <p class="stock">
-                📦 Stock available: {{ product.stock }}
-            </p>
+                <h1>{{ product.name }}</h1>
 
-            <a
-                href="{% url 'add_to_cart' product.id %}"
-                class="button"
-            >
-                🛒 Add to Cart
-            </a>
+                <div class="detail-price">R{{ product.price }}</div>
 
-            {% if user.is_authenticated %}
+                <p class="detail-desc">{{ product.description|linebreaksbr }}</p>
 
-                {% if product.id in wishlist_product_ids %}
-
-                    <a
-                        href="{% url 'remove_from_wishlist' product.id %}"
-                        class="button wishlist-button"
-                    >
-                        ♥ Remove from Wishlist
-                    </a>
-
+                {% if product.stock > 0 %}
+                    <div class="stock"><i></i> In stock ({{ product.stock }} available)</div>
                 {% else %}
-
-                    <a
-                        href="{% url 'add_to_wishlist' product.id %}"
-                        class="button wishlist-button"
-                    >
-                        ♡ Add to Wishlist
-                    </a>
-
+                    <div class="stock out"><i></i> Out of stock</div>
                 {% endif %}
 
-            {% endif %}
+                <div class="buy-row">
 
+                    {% if product.stock > 0 %}
+                        <a href="{% url 'add_to_cart' product.id %}" class="btn">
+                            Add to Cart
+                            {% include "partials/icon.html" with name="bag" size=14 %}
+                        </a>
+                    {% else %}
+                        <span class="btn disabled" aria-disabled="true">Sold out</span>
+                    {% endif %}
+
+                    {% if user.is_authenticated %}
+                        {% if product.id in wishlist_product_ids %}
+                            <a
+                                href="{% url 'remove_from_wishlist' product.id %}"
+                                class="heart-btn active"
+                                aria-label="Remove from wishlist"
+                                title="Remove from wishlist"
+                            >
+                                {% include "partials/icon.html" with name="heart" size=15 class="filled" %}
+                            </a>
+                        {% else %}
+                            <a
+                                href="{% url 'add_to_wishlist' product.id %}"
+                                class="heart-btn"
+                                aria-label="Add to wishlist"
+                                title="Add to wishlist"
+                            >
+                                {% include "partials/icon.html" with name="heart" size=15 %}
+                            </a>
+                        {% endif %}
+                    {% endif %}
+
+                </div>
+
+                <div class="detail-features">
+                    <div class="detail-feature">{% include "partials/icon.html" with name="truck" size=15 %} Fast shipping</div>
+                    <div class="detail-feature">{% include "partials/icon.html" with name="shield" size=15 %} Secure payments</div>
+                    <div class="detail-feature">{% include "partials/icon.html" with name="package" size=15 %} Easy returns</div>
+                </div>
+
+            </div>
         </div>
 
     </div>
-
-</body>
-
-</html>
+</div>
+{% endblock %}
