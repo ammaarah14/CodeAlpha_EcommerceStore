@@ -1,0 +1,94 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Wishlist | Study Store</title>
+
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+
+</head>
+
+<body>
+
+    <nav class="navbar">
+
+        <h1>🎀 Study Store 🛍️</h1>
+
+        <a href="{% url 'home' %}" class="button">
+            🏠 Store
+        </a>
+
+    </nav>
+
+
+    <div class="container">
+
+        <h2>💕 My Wishlist</h2>
+
+        {% if wishlist_items %}
+
+            <div class="products">
+
+                {% for item in wishlist_items %}
+
+                    <div class="product-card">
+
+                        <h3>
+                            {{ item.product.name }}
+                        </h3>
+
+                        <p>
+                            {{ item.product.description }}
+                        </p>
+
+                        <p class="price">
+                            R{{ item.product.price }}
+                        </p>
+
+                        <p class="stock">
+                            📦 Stock: {{ item.product.stock }}
+                        </p>
+
+                        <a
+                            href="{% url 'product_detail' item.product.id %}"
+                            class="button"
+                        >
+                            View Product
+                        </a>
+
+                        <a
+                            href="{% url 'remove_from_wishlist' item.product.id %}"
+                            class="button wishlist-remove-button"
+                        >
+                            💔 Remove
+                        </a>
+
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+        {% else %}
+
+            <p>
+                Your wishlist is empty. 💕
+            </p>
+
+            <a href="{% url 'home' %}" class="button">
+                Browse Products
+            </a>
+
+        {% endif %}
+
+    </div>
+
+</body>
+
+</html>

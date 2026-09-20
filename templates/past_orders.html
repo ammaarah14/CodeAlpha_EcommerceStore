@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Past Orders | Study Store</title>
+</head>
+
+<body>
+
+    <h1>📦 My Past Orders</h1>
+
+    <p>
+        Here you can view your previous orders and their status.
+    </p>
+
+    <hr>
+
+    {% if orders %}
+
+        {% for order in orders %}
+
+            <div>
+
+                <h2>
+                    Order #{{ order.id }}
+                </h2>
+
+                <p>
+                    Date:
+                    {{ order.created_at|date:"d M Y, H:i" }}
+                </p>
+
+                <p>
+                    Status:
+                    <strong>{{ order.get_status_display }}</strong>
+                </p>
+
+                <h3>Items:</h3>
+
+                {% for item in order.items.all %}
+
+                    <p>
+                        {{ item.product.name }}
+                        × {{ item.quantity }}
+                        — R{{ item.subtotal }}
+                    </p>
+
+                {% endfor %}
+
+                <h3>
+                    Total: R{{ order.total }}
+                </h3>
+
+            </div>
+
+            <hr>
+
+        {% endfor %}
+
+    {% else %}
+
+        <p>
+            You haven't placed any orders yet.
+        </p>
+
+    {% endif %}
+
+    <br>
+
+    <a href="/">
+        🏠 Back to Store
+    </a>
+
+    &nbsp;&nbsp;
+
+    <a href="{% url 'cart' %}">
+        🛒 View Cart
+    </a>
+
+</body>
+
+</html>

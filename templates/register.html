@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Create Account | Study Store</title>
+
+    <style>
+        .valid {
+            color: green;
+        }
+
+        .invalid {
+            color: red;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>🎀 Create Your Study Store Account</h1>
+
+    <p>Create an account to continue shopping.</p>
+
+    {% if messages %}
+
+        {% for message in messages %}
+
+            <p>{{ message }}</p>
+
+        {% endfor %}
+
+    {% endif %}
+
+
+    <form method="POST">
+
+        {% csrf_token %}
+
+        <label>Username:</label>
+        <br>
+
+        <input type="text" name="username" required>
+
+        <br><br>
+
+
+        <label>Email:</label>
+        <br>
+
+        <input type="email" name="email" required>
+
+        <br><br>
+
+
+        <label>Password:</label>
+        <br>
+
+        <input
+            type="password"
+            name="password"
+            id="password"
+            required
+        >
+
+        <br>
+
+        <p>Password must contain:</p>
+
+        <ul>
+            <li id="length">❌ At least 8 characters</li>
+            <li id="uppercase">❌ At least 1 uppercase letter</li>
+            <li id="lowercase">❌ At least 1 lowercase letter</li>
+            <li id="number">❌ At least 1 number</li>
+            <li id="special">❌ At least 1 special character</li>
+        </ul>
+
+        <br>
+
+        <button type="submit">
+            Create Account
+        </button>
+
+    </form>
+
+    <br>
+
+    <a href="{% url 'login' %}">
+        Already have an account? Login
+    </a>
+
+    <br><br>
+
+    <a href="/">
+        ← Back to Store
+    </a>
+
+
+    <script>
+
+        const password = document.getElementById("password");
+
+        password.addEventListener("input", function () {
+
+            const value = password.value;
+
+            const length = document.getElementById("length");
+            const uppercase = document.getElementById("uppercase");
+            const lowercase = document.getElementById("lowercase");
+            const number = document.getElementById("number");
+            const special = document.getElementById("special");
+
+
+            // 8 characters
+            if (value.length >= 8) {
+                length.textContent = "✅ At least 8 characters";
+                length.className = "valid";
+            } else {
+                length.textContent = "❌ At least 8 characters";
+                length.className = "invalid";
+            }
+
+
+            // Uppercase
+            if (/[A-Z]/.test(value)) {
+                uppercase.textContent = "✅ At least 1 uppercase letter";
+                uppercase.className = "valid";
+            } else {
+                uppercase.textContent = "❌ At least 1 uppercase letter";
+                uppercase.className = "invalid";
+            }
+
+
+            // Lowercase
+            if (/[a-z]/.test(value)) {
+                lowercase.textContent = "✅ At least 1 lowercase letter";
+                lowercase.className = "valid";
+            } else {
+                lowercase.textContent = "❌ At least 1 lowercase letter";
+                lowercase.className = "invalid";
+            }
+
+
+            // Number
+            if (/[0-9]/.test(value)) {
+                number.textContent = "✅ At least 1 number";
+                number.className = "valid";
+            } else {
+                number.textContent = "❌ At least 1 number";
+                number.className = "invalid";
+            }
+
+
+            // Special character
+            if (/[!@#$%^&*]/.test(value)) {
+                special.textContent = "✅ At least 1 special character";
+                special.className = "valid";
+            } else {
+                special.textContent = "❌ At least 1 special character";
+                special.className = "invalid";
+            }
+
+        });
+
+    </script>
+
+</body>
+
+</html>
+

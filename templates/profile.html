@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>My Account | Study Store</title>
+
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+</head>
+
+<body>
+
+    <nav class="navbar">
+
+        <h1>🎀 Study Store 🛍️</h1>
+
+        <a href="{% url 'home' %}" class="button">
+            🏠 Store
+        </a>
+
+        <a href="{% url 'cart' %}" class="button">
+            🛒 View Cart
+        </a>
+
+    </nav>
+
+    <div class="container">
+
+        <h2>👤 My Account</h2>
+
+        <div class="profile-card">
+
+            <h3>Account Details</h3>
+
+            <p>
+                <strong>Username:</strong>
+                {{ user.username }}
+            </p>
+
+            <p>
+                <strong>Email:</strong>
+                {{ user.email }}
+            </p>
+
+        </div>
+
+        <br>
+
+        <a href="{% url 'past_orders' %}" class="button">
+            📦 Past Orders
+        </a>
+
+        <a href="#" class="button">
+            💕 Wishlist
+        </a>
+
+        <br><br>
+
+        <a href="{% url 'logout' %}" class="button">
+            🚪 Logout
+        </a>
+
+        <br><br>
+
+        <button class="button">
+            🗑️ Delete Account
+        </button>
+
+    </div>
+
+</body>
+
+</html>

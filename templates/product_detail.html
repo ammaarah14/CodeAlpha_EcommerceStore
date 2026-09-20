@@ -1,0 +1,80 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{{ product.name }} | Study Store</title>
+
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+</head>
+
+<body>
+
+    <nav class="navbar">
+        <h1>Study Store</h1>
+    </nav>
+
+    <div class="container">
+
+        <a href="/" class="button">
+            ← Back to Store
+        </a>
+
+        <div class="product-card">
+
+            <h2>{{ product.name }}</h2>
+
+            <p>
+                {{ product.description }}
+            </p>
+
+            <p class="price">
+                R{{ product.price }}
+            </p>
+
+            <p class="stock">
+                📦 Stock available: {{ product.stock }}
+            </p>
+
+            <a
+                href="{% url 'add_to_cart' product.id %}"
+                class="button"
+            >
+                🛒 Add to Cart
+            </a>
+
+            {% if user.is_authenticated %}
+
+                {% if product.id in wishlist_product_ids %}
+
+                    <a
+                        href="{% url 'remove_from_wishlist' product.id %}"
+                        class="button wishlist-button"
+                    >
+                        ♥ Remove from Wishlist
+                    </a>
+
+                {% else %}
+
+                    <a
+                        href="{% url 'add_to_wishlist' product.id %}"
+                        class="button wishlist-button"
+                    >
+                        ♡ Add to Wishlist
+                    </a>
+
+                {% endif %}
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+</body>
+
+</html>

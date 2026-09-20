@@ -1,0 +1,690 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Study Store</title>
+
+    <link
+        rel="stylesheet"
+        href="{% static 'style.css' %}"
+    >
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    >
+
+</head>
+
+
+<body>
+
+
+<!-- =====================================================
+     NAVIGATION
+     ===================================================== -->
+
+<nav class="navbar">
+
+    <h1>
+    <i class="fa-solid fa-book-open"></i>
+    Study Store
+    </h1>
+
+    <div class="account-area">
+
+        {% if user.is_authenticated %}
+
+            <!-- Account button -->
+
+            <button
+                type="button"
+                class="account-button"
+                onclick="toggleAccountMenu()"
+            >
+                <i class="fa-solid fa-user"></i> Account
+            </button>
+
+
+        {% else %}
+
+            <!-- Login / Register -->
+
+            <a
+                href="{% url 'login' %}"
+                class="button"
+            >
+                Login
+            </a>
+
+            <a
+                href="{% url 'register' %}"
+                class="button"
+            >
+                Create Account
+            </a>
+
+        {% endif %}
+
+
+        <!-- Cart -->
+
+        <a
+            href="{% url 'cart' %}"
+            class="button cart-button"
+        >
+            <i class="fa-solid fa-cart-shopping"></i> View Cart
+        </a>
+
+    </div>
+
+</nav>
+
+
+
+<!-- =====================================================
+     ACCOUNT SIDE MENU
+     ===================================================== -->
+
+{% if user.is_authenticated %}
+
+    <!-- Dark overlay -->
+
+    <div
+        id="account-overlay"
+        class="account-overlay"
+        onclick="closeAccountMenu()"
+    ></div>
+
+
+    <!-- Side menu -->
+
+    <aside
+        id="account-menu"
+        class="account-menu"
+    >
+
+
+        <!-- Account header -->
+
+        <div class="account-menu-header">
+
+            <div>
+
+                <h2>
+                    <i class="fa-solid fa-user"></i> My Account
+                </h2>
+
+                <p>
+                    {{ user.username }}
+                </p>
+
+            </div>
+
+
+            <button
+                type="button"
+                class="close-account"
+                onclick="closeAccountMenu()"
+            >
+                ✕
+            </button>
+
+        </div>
+
+
+
+        <!-- Account options -->
+
+        <div class="account-menu-options">
+
+
+            <!-- Profile -->
+
+            <a href="{% url 'profile' %}">
+
+                <span><i class="fa-solid fa-user"></i></span>
+
+                <span>
+                    Profile
+                </span>
+
+            </a>
+
+
+
+            <!-- Past Orders -->
+
+            <a href="{% url 'past_orders' %}">
+
+                <span><i class="fa-solid fa-box"></i></span>
+
+                <span>
+                    Past Orders
+                </span>
+
+            </a>
+
+
+
+            <!-- Wishlist -->
+
+            <a href="{% url 'wishlist' %}">
+
+                <span><i class="fa-regular fa-heart"></i></span>
+
+                <span>
+                    Wishlist
+                </span>
+
+            </a>
+
+
+
+            <!-- Logout -->
+
+            <a href="{% url 'logout' %}">
+
+                <span><i class="fa-solid fa-right-from-bracket"></i></span>
+
+                <span>
+                    Logout
+                </span>
+
+            </a>
+
+        </div>
+
+
+
+        <!-- Delete account -->
+
+        <div class="account-menu-danger">
+
+            <a href="{% url 'delete_account' %}">
+
+                <i class="fa-solid fa-trash"></i> Delete Account
+
+            </a>
+
+        </div>
+
+
+    </aside>
+
+{% endif %}
+
+
+
+<!-- =====================================================
+     HERO SECTION
+     ===================================================== -->
+
+<section class="hero">
+
+    <div class="hero-content">
+
+        <h2>Better Tools for a Brighter Future</h2>
+
+        <p>
+            Premium study essentials, stationery, tech
+            and more — all in one place.
+        </p>
+
+        <a href="#products" class="button">
+            Shop Now →
+        </a>
+
+    </div>
+
+</section>
+
+
+
+<!-- =====================================================
+     SERVICE / TRUST STRIP
+     ===================================================== -->
+
+<section class="service-strip">
+
+
+    <!-- Free Shipping -->
+
+    <div class="service-item">
+
+        <div class="service-icon">
+            <i class="fa-solid fa-truck"></i>
+        </div>
+
+
+        <div>
+
+            <h4>
+                Free Shipping
+            </h4>
+
+            <p>
+                On orders over R500
+            </p>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- Secure Payments -->
+
+    <div class="service-item">
+
+        <div class="service-icon">
+            <i class="fa-solid fa-shield-halved"></i>
+        </div>
+
+
+        <div>
+
+            <h4>
+                Secure Payments
+            </h4>
+
+            <p>
+                Your data is safe
+            </p>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- Easy Returns -->
+
+    <div class="service-item">
+
+        <div class="service-icon">
+            <i class="fa-solid fa-rotate-left"></i>
+        </div>
+
+
+        <div>
+
+            <h4>
+                Easy Returns
+            </h4>
+
+            <p>
+                Hassle-free returns
+            </p>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- Support -->
+
+    <div class="service-item">
+
+        <div class="service-icon">
+            <i class="fa-solid fa-headset"></i>
+        </div>
+
+
+        <div>
+
+            <h4>
+                24/7 Support
+            </h4>
+
+            <p>
+                We're here to help
+            </p>
+
+        </div>
+
+    </div>
+
+
+</section>
+
+
+
+<!-- =====================================================
+     MAIN CONTENT
+     ===================================================== -->
+
+<div
+    class="container"
+    id="products"
+>
+
+
+    <!-- Welcome -->
+
+    <section class="store-introduction">
+
+        <p class="section-eyebrow">
+            WELCOME TO STUDY STORE
+        </p>
+
+        <h2>
+            Everything you need<br>
+            to study smarter.
+        </h2>
+
+        <p>
+            Discover carefully selected study essentials
+            designed to make your everyday learning
+            experience better.
+        </p>
+
+    </section>
+
+
+
+    <!-- =================================================
+         PRODUCTS
+         ================================================= -->
+
+    <section class="products-section">
+
+
+        <div class="section-heading">
+
+            <div>
+
+                <p class="section-eyebrow">
+                    OUR COLLECTION
+                </p>
+
+                <h2>
+                    Featured Products
+                </h2>
+
+            </div>
+
+
+            <span class="product-count">
+                {{ products|length }} Products
+            </span>
+
+        </div>
+
+
+
+        <div class="products">
+
+
+            {% for product in products %}
+
+
+                <article class="product-card">
+
+
+                    <!-- Product image -->
+
+                    {% if product.image %}
+
+                        <div class="product-image">
+
+                            <img
+                                src="{{ product.image }}"
+                                alt="{{ product.name }}"
+                            >
+
+                        </div>
+
+                    {% else %}
+
+                        <div class="product-image product-image-placeholder">
+
+                            <span>
+                                <i class="fa-solid fa-book"></i>
+                            </span>
+
+                        </div>
+
+                    {% endif %}
+
+
+
+                    <!-- Product information -->
+
+                    <div class="product-information">
+
+
+                        <h3>
+                            {{ product.name }}
+                        </h3>
+
+
+                        <p class="product-description">
+                            {{ product.description }}
+                        </p>
+
+
+                        <div class="product-bottom">
+
+
+                            <div>
+
+                                <p class="price">
+                                    R{{ product.price }}
+                                </p>
+
+
+                                {% if product.stock > 0 %}
+
+                                    <p class="stock">
+                                        ● In stock
+                                    </p>
+
+                                {% else %}
+
+                                    <p class="stock out-of-stock">
+                                        ● Out of stock
+                                    </p>
+
+                                {% endif %}
+
+                            </div>
+
+
+                            <a
+                                href="{% url 'product_detail' product.id %}"
+                                class="product-view-button"
+                            >
+                                View →
+                            </a>
+
+
+                        </div>
+
+
+                    </div>
+
+
+                </article>
+
+
+            {% empty %}
+
+
+                <div class="empty-products">
+
+                    <h3>
+                        No products available
+                    </h3>
+
+                    <p>
+                        Check back soon for new study essentials.
+                    </p>
+
+                </div>
+
+
+            {% endfor %}
+
+
+        </div>
+
+
+    </section>
+
+
+</div>
+
+
+
+<!-- =====================================================
+     FOOTER
+     ===================================================== -->
+
+<footer class="site-footer">
+
+
+    <div class="footer-inner">
+
+
+        <div>
+
+            <h3>
+                <i class="fa-solid fa-book-open"></i> Study Store
+            </h3>
+
+            <p>
+                Better tools for a brighter future.
+            </p>
+
+        </div>
+
+
+        <div class="footer-links">
+
+            <a href="/">
+                Home
+            </a>
+
+            <a href="#products">
+                Shop
+            </a>
+
+            {% if user.is_authenticated %}
+
+                <a href="{% url 'past_orders' %}">
+                    Orders
+                </a>
+
+                <a href="{% url 'wishlist' %}">
+                    Wishlist
+                </a>
+
+            {% endif %}
+
+        </div>
+
+
+    </div>
+
+
+    <div class="footer-bottom">
+
+        <p>
+            © 2026 Study Store. All rights reserved.
+        </p>
+
+    </div>
+
+
+</footer>
+
+
+
+<!-- =====================================================
+     ACCOUNT MENU JAVASCRIPT
+     ===================================================== -->
+
+<script>
+
+
+function toggleAccountMenu() {
+
+    const menu =
+        document.getElementById("account-menu");
+
+    const overlay =
+        document.getElementById("account-overlay");
+
+
+    if (!menu || !overlay) {
+        return;
+    }
+
+
+    menu.classList.toggle("active");
+
+    overlay.classList.toggle("active");
+
+}
+
+
+
+function closeAccountMenu() {
+
+    const menu =
+        document.getElementById("account-menu");
+
+    const overlay =
+        document.getElementById("account-overlay");
+
+
+    if (!menu || !overlay) {
+        return;
+    }
+
+
+    menu.classList.remove("active");
+
+    overlay.classList.remove("active");
+
+}
+
+
+
+/*
+    Close the account menu when
+    the Escape key is pressed.
+*/
+
+document.addEventListener(
+    "keydown",
+    function(event) {
+
+        if (event.key === "Escape") {
+
+            closeAccountMenu();
+
+        }
+
+    }
+);
+
+
+</script>
+
+
+</body>
+
+</html>

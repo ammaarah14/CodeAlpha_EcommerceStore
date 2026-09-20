@@ -1,0 +1,138 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Checkout | Study Store</title>
+
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+
+</head>
+
+<body>
+
+    <nav class="navbar">
+
+        <h1>🎀 Study Store 🛍️</h1>
+
+    </nav>
+
+
+    <div class="container">
+
+        <a href="{% url 'cart' %}" class="button">
+            ← Back to Cart
+        </a>
+
+        <br>
+        <br>
+
+        <h2>🛍️ Checkout</h2>
+
+        <p>
+            Review your order before placing it.
+        </p>
+
+
+        {% if messages %}
+
+            {% for message in messages %}
+
+                <p>
+                    {{ message }}
+                </p>
+
+            {% endfor %}
+
+        {% endif %}
+
+
+        <div class="product-card">
+
+            <h3>Customer</h3>
+
+            <p>
+                👤 {{ request.user.username }}
+            </p>
+
+            {% if request.user.email %}
+
+                <p>
+                    ✉️ {{ request.user.email }}
+                </p>
+
+            {% endif %}
+
+        </div>
+
+
+        <br>
+
+
+        {% for item in products %}
+
+            <div class="product-card">
+
+                <h3>
+                    {{ item.product.name }}
+                </h3>
+
+                <p>
+                    Quantity: {{ item.quantity }}
+                </p>
+
+                <p>
+                    Price per item:
+                    R{{ item.product.price }}
+                </p>
+
+                <p class="price">
+                    Subtotal: R{{ item.subtotal }}
+                </p>
+
+            </div>
+
+            <br>
+
+        {% endfor %}
+
+
+        <div class="product-card">
+
+            <h2>
+                Total: R{{ total }}
+            </h2>
+
+            <p>
+                Your order will be placed using the
+                current stock and prices shown above.
+            </p>
+
+            <form method="POST">
+
+                {% csrf_token %}
+
+                <button
+                    type="submit"
+                    class="button"
+                >
+                    ✅ Place Order
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</body>
+
+</html>
